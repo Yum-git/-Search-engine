@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
  
-url = "https://www.yahoo.co.jp/"
+url = "https://www.nikkei.com/markets/kabu/"
  
 response = requests.get(url)
 soup = BeautifulSoup(response.text, "html.parser")
@@ -15,5 +15,6 @@ for i in soup.find_all('a'):
         HyperURLList.append(urlis)
         
 
-print(HyperURLList)
+for i in HyperURLList:
+    print(i)
         
