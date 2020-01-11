@@ -1,0 +1,1 @@
+Testofmysql.py ... mysql接続テスト用プログラムファイル

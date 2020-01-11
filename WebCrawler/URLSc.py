@@ -10,15 +10,19 @@ import sys
 
 import mysql.connector
 
-conn = mysql.connector.connect(user = 'root', password = 'uinndouzu7', host = 'localhost', database = 'websc')
+print('Mysql password please:')
+passinput = input()
+try:
+    conn = mysql.connector.connect(user = 'root', password = passinput, host = 'localhost', database = 'websc')
+except:
+    print('passward is incorrect.')
+    sys.exit(0)
 cur = conn.cursor()
 
+pageurl = []
 def URLSc(url, count):
-    if counter == 500:
-        cur.close()
-        conn.commit()
-        conn.close()
-        sys.exit(1)
+    global pageurl
+    time.sleep(2)
     response = requests.get(url)
     urlget = BeautifulSoup(response.text, "html.parser")
     
@@ -34,11 +38,13 @@ def URLSc(url, count):
     """
     
     
-    
-    title = urlget.find('title').text
-    print(count, title, url)
-    cur.execute("insert into maintable(title, url, mainid) values(%s, %s, 1);", (title, url, ))
-    conn.commit()
+    if url not in pageurl:
+        pageurl.append(url)
+        title = urlget.find('title').text
+        print(count, title, url)
+        cur.execute("insert into maintable(title, url, mainid) values(%s, %s, %s);", (title, url, 1))
+        conn.commit()
+        
     
     
 
@@ -53,7 +59,7 @@ def URLSc(url, count):
                 with open('clone.txt', mode='a') as f:
                     f.write(urlreturn + '\n')
                 """
-                if count == 0 or count == 1:
+                if count != 2:
                     URLSc(urlreturn, count + 1)
                 else:
                     continue
@@ -84,7 +90,7 @@ def URLSc(url, count):
 
 
 if __name__ == "__main__":
-    url = 'https://www.nikkei.com/'
+    url = 'https://ja.wikipedia.org/wiki/%E3%83%A1%E3%82%A4%E3%83%B3%E3%83%9A%E3%83%BC%E3%82%B8'
     URLSc(url, 0)
     cur.close()
     conn.commit()
